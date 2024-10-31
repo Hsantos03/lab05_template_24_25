@@ -59,40 +59,91 @@ public class FlightsView extends BorderPane {
     private void createInitialModel() {
         // TODO: create flight model - Figure of assignment
 
-        // Vertex<Airport> sfo = graph.insertVertex(new Airport("SFO"));
-        // ...
+        // Criar aeróportos (vértices)
+        Vertex<Airport> hnl = graph.insertVertex(new Airport("HNL"));
+        Vertex<Airport> lax = graph.insertVertex(new Airport("LAX"));
+        Vertex<Airport> sfo = graph.insertVertex(new Airport("SFO"));
+        Vertex<Airport> sea = graph.insertVertex(new Airport("SEA"));
+        Vertex<Airport> ord = graph.insertVertex(new Airport("ORD"));
+        Vertex<Airport> dfw = graph.insertVertex(new Airport("DFW"));
+        Vertex<Airport> mia = graph.insertVertex(new Airport("MIA"));
+        Vertex<Airport> bos = graph.insertVertex(new Airport("BOS"));
+        Vertex<Airport> jfk = graph.insertVertex(new Airport("JFK"));
+        Vertex<Airport> mco = graph.insertVertex(new Airport("MCO"));
+        Vertex<Airport> atl = graph.insertVertex(new Airport("ATL"));
+        Vertex<Airport> iah = graph.insertVertex(new Airport("IAH"));
+        Vertex<Airport> phx = graph.insertVertex(new Airport("PHX"));
+
+        // Criar voos (arestas) com base na Tabela 1
+        graph.insertEdge(hnl, lax, new Flight("UN3563", 2555));
+        graph.insertEdge(hnl, lax, new Flight("DT1597", 2555));
+        graph.insertEdge(lax, sfo, new Flight("UN9375", 337));
+        graph.insertEdge(lax, sfo, new Flight("AM4526", 337));
+        graph.insertEdge(lax, ord, new Flight("UN4836", 1743));
+        graph.insertEdge(lax, ord, new Flight("VA2001", 1743));
+        graph.insertEdge(lax, dfw, new Flight("UN1475", 1843));
+        graph.insertEdge(lax, dfw, new Flight("AL7854", 1843));
+        graph.insertEdge(sfo, dfw, new Flight("SP1020", 1233));
+        graph.insertEdge(sfo, dfw, new Flight("AM4582", 1233));
+        graph.insertEdge(ord, dfw, new Flight("UN4568", 802));
+        graph.insertEdge(sea, ord, new Flight("SP4512", 1387));
+        graph.insertEdge(sea, bos, new Flight("AM4520", 849));
+        graph.insertEdge(sea, bos, new Flight("UN7812", 849));
+        graph.insertEdge(mia, jfk, new Flight("FT1000", 1205));
+        graph.insertEdge(mia, mco, new Flight("FT4021", 1099));
+        graph.insertEdge(mia, mco, new Flight("AM1026", 1099));
+        graph.insertEdge(mia, atl, new Flight("AM5267", 1120));
+
     }
 
     private void addAirport(String airportCode) {
         // TODO: implement, check for errors and use showError(message) in case of error
         //  code must be valid, i.e., not empty
-
+        graph.insertVertex(new Airport(airportCode));
         showError("Not implemented yet!");
     }
 
-    private void addFlight(Vertex<Airport> vertexFrom, Vertex<Airport> vertexTo, String code, String distance) {
+    private void addFlight(Vertex<Airport> vertexFrom, Vertex<Airport> vertexTo, String code, double distance) {
         // TODO: implement, check for errors and use showError(message) in case of error
         //  Cannot add flights with the same airport as inbound/outbound
-
+        graph.insertEdge(vertexFrom, vertexTo, new Flight(code, distance));
         showError("Not implemented yet!");
     }
 
     private void removeFlight(Edge<Flight, Airport> edge) {
         // TODO: implement, check for errors and use showError(message) in case of error
-
+        graph.removeEdge(edge);
         showError("Not implemented yet!");
     }
 
     private void removeAirport(Vertex<Airport> vertex) {
         // TODO: implement, check for errors and use showError(message) in case of error
-
+        graph.removeVertex(vertex);
         showError("Not implemented yet!");
     }
 
     private void updateStatistics() {
         // TODO: query model and update labels
         //  e.g., labelNumberAirports.setText( ?? );
+        int totalAirports = graph.numVertices();
+        int totalFlights = graph.numEdges();
 
+        Vertex<Airport> busiestAirport = null;
+        int maxConnections = 0;
+
+        for (Vertex<Airport> airport : graph.vertices()) {
+            int connections = graph.incidentEdges(airport).size();
+            if (connections > maxConnections) {
+                busiestAirport = airport;
+                maxConnections = connections;
+            }
+        }
+
+        System.out.println("Total de aeroportos: " + totalAirports);
+        System.out.println("Total de voos: " + totalFlights);
+        if (busiestAirport != null) {
+            System.out.println("Aeroporto com mais tráfego: " + busiestAirport.element().toString() + " com " + maxConnections + " conexões.");
+        }
         //labelNumberAirports.setText( ??? );
         //labelNumberFlights.setText( ??? );
         //labelBusiestAirport.setText( ??? );
@@ -203,7 +254,7 @@ public class FlightsView extends BorderPane {
             Vertex<Airport> vertexTo = comboAirportsTo.getSelectionModel().getSelectedItem();
             String flightCode = textFlightCode.getText();
             String flightDistance = textFlightDistance.getText();
-            addFlight(vertexFrom, vertexTo, flightCode, flightDistance);
+            addFlight(vertexFrom, vertexTo, flightCode, Double.parseDouble(flightDistance));
             textFlightCode.clear();
             textFlightDistance.clear();
             graphView.update();

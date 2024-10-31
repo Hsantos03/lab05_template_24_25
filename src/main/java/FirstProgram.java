@@ -17,6 +17,27 @@ public class FirstProgram extends Application {
 
         Graph<Character, Integer> g = new GraphEdgeList<>();
 
+        // Adicionar vértices
+        Vertex<Character> a = g.insertVertex('a');
+        Vertex<Character> b = g.insertVertex('b');
+        Vertex<Character> c = g.insertVertex('c');
+        Vertex<Character> d = g.insertVertex('d');
+        Vertex<Character> e = g.insertVertex('e');
+        Vertex<Character> f = g.insertVertex('f');
+        Vertex<Character> gVertex = g.insertVertex('g');
+
+        // Adicionar arestas com os valores fornecidos
+        g.insertEdge(a, b, 6);
+        g.insertEdge(b, c, 2);
+        g.insertEdge(c, d, 30);
+        g.insertEdge(d, e, 10);
+        g.insertEdge(e, f, 15);
+        g.insertEdge(f, gVertex, 8);
+        g.insertEdge(gVertex, a, 11);
+        g.insertEdge(gVertex, e, 50);
+        g.insertEdge(f, d, 22);
+
+
         // TODO: create graph structure
 
         ///////////////////////////////////////////////////////////////////////////////////////
